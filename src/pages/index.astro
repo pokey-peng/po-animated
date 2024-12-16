@@ -23,7 +23,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   <Header />
   <main id="main-content">
     <section id="hero">
-      <h1>Mingalaba</h1>
+      <h1>Pogis's Cabin</h1>
       <a
         target="_blank"
         href="/rss.xml"
@@ -42,19 +42,16 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       </a>
 
       <p>
-        AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro
-        blog theme. This theme follows best practices and provides accessibility
-        out of the box. Light and dark mode are supported by default. Moreover,
-        additional color schemes can also be configured.
+        欢迎来到我的小屋！我在这里分享关于我学习WebGIS、前端开发的过程和经验。我希望你能在这里找到有用的东西。
       </p>
       <p>
-        Read the blog posts or check
+        请移步<LinkButton className="underline decoration-dashed underline-offset-4 hover:text-skin-accent" href="/about/">About</LinkButton>页面了解更多关于我的信息，或查看
         <LinkButton
           className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
           href="https://github.com/satnaing/astro-paper#readme"
         >
           README
-        </LinkButton> for more info.
+        </LinkButton> 了解本站的技术栈。
       </p>
       {
         // only display if at least one social link is enabled
@@ -73,7 +70,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       featuredPosts.length > 0 && (
         <>
           <section id="featured">
-            <h2>Featured</h2>
+            <h2>Recent Posts</h2>
             <ul>
               {featuredPosts.map(({ data, slug }) => (
                 <Card
