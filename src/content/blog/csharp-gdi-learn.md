@@ -12,21 +12,18 @@ ogImage: ""
 description: C#课一次作业需要在`winform`上实现一个简单的绘图程序，要求添加橡皮筋效果。图像是在`picturebox`控件上绘制的，我一开始始终解决不了的问题是要实现橡皮筋效果，鼠标移动过程中绘制显示的图形就要随时擦除，但是通过GDI+在控件的Graphic对象上绘制图形就不能再擦掉了。在网上搜索了一下，不管是刷新重绘控件，还是通过在内存中开辟位图的办法都失败，后面那种办法是最多的，但我怎么都弄不好，可能是我真地太菜了吧！
 canonicalURL: https://example.org/my-article-was-already-posted-here
 ---
-
 # C#利用GDI+实现橡皮筋效果
 
-
-
-因为C#课一次作业需要在`winform`上实现一个简单的绘图程序，要求添加橡皮筋效果。图像是在`picturebox`控件上绘制的，我一开始始终解决不了的问题是要实现橡皮筋效果，鼠标移动过程中绘制显示的图形就要随时擦除，但是通过GDI+在控件的Graphic对象上绘制图形就不能再擦掉了。在网上搜索了一下，不管是刷新重绘控件，还是通过在内存中开辟位图的办法都失败，后面那种办法是最多的，但我怎么都弄不好，可能是我真地太菜了吧！
+因为C#课一次作业需要在 `winform`上实现一个简单的绘图程序，要求添加橡皮筋效果。图像是在 `picturebox`控件上绘制的，我一开始始终解决不了的问题是要实现橡皮筋效果，鼠标移动过程中绘制显示的图形就要随时擦除，但是通过GDI+在控件的Graphic对象上绘制图形就不能再擦掉了。在网上搜索了一下，不管是刷新重绘控件，还是通过在内存中开辟位图的办法都失败，后面那种办法是最多的，但我怎么都弄不好，可能是我真地太菜了吧！
 
 最终找到了办法是通过GDI+自带的双缓冲技术实现的。我们要实现橡皮筋的效果就要先擦除掉原来的图案，然后再绘制新的图案，我们可以先通过GDI+的填充背景色，覆盖原来的图形，再将所有图形绘制到屏幕上，让窗体刷新。但是窗体刷新时会频繁地重绘窗体表面，这样就会导致闪烁，而双缓冲能有效避免这个问题。自己也是在搜素的过程中大致理解了下这个技术。大概是先在内存中创建一个新的与窗体大小一样的缓冲区，我们的绘图操作先在这块缓冲区上完成，然后再将缓冲区上的图形渲染到屏幕上。由于渲染时只是进行位图的拷贝，所以速度是非常快的，能有效避免窗体反复刷新重绘时带来的闪烁。
 
-大概思路是这样的：用`GeometryBase`基类及其派生类储存图形对象，类中包括相应图形对象相应的绘制函数`draw(Graphic g)`,用一个list集合`GeometrySet`存放所有已经绘制完成的图形，定义一个接口`Tool`，里面包括响应鼠标事件的函数`onmousedown`,`onmousemove`等，再定义一个工具类及其派生类，继承自接口`Tool`,实现接口，构造图形对象并添加到`GeometrySet`集合中。
-
+大概思路是这样的：用 `GeometryBase`基类及其派生类储存图形对象，类中包括相应图形对象相应的绘制函数 `draw(Graphic g)`,用一个list集合 `GeometrySet`存放所有已经绘制完成的图形，定义一个接口 `Tool`，里面包括响应鼠标事件的函数 `onmousedown`,`onmousemove`等，再定义一个工具类及其派生类，继承自接口 `Tool`,实现接口，构造图形对象并添加到 `GeometrySet`集合中。
 
 具体代码如下:
 
 * 定义工具和控件的Graphic对象初始化
+
   ```C#
   // 绘制工具
         private Tool _actionTool = null;
@@ -45,6 +42,7 @@ canonicalURL: https://example.org/my-article-was-already-posted-here
         }
   ```
 * 选择绘制的工具
+
   ```C#
         /// <summary>
         /// 选择绘图方式
@@ -60,7 +58,6 @@ canonicalURL: https://example.org/my-article-was-already-posted-here
 
         }
   ```
-
 * 鼠标移动事件响应函数
 
   ```C#
@@ -84,9 +81,6 @@ canonicalURL: https://example.org/my-article-was-already-posted-here
 
           }
   ```
-
-
-
 * 鼠标点击事件响应函数
 
   ```C#
@@ -96,9 +90,6 @@ canonicalURL: https://example.org/my-article-was-already-posted-here
               actionTool.onmousedown(e);
           }
   ```
-
-
-
 * 绘制工具类[^以绘制直线为例]
 
   ```C#
